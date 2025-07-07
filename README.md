@@ -9,4 +9,5 @@ Maximum likelihood estimators (MLEs) are used to estimate the model parameters. 
 The introduced methods are used for modeling some sustainability indicators related to the SDGs, also considering the reading skills of dyslexic children, which are indirectly associated with SDG 4 (Quality Education) and SDG 3 (Health and Well-Being).
 </p>
 Keywords: Maximum Likelihood, Monte Carlo Simulation, Quantile Regression, Unit Distribution.
+
 DOI:

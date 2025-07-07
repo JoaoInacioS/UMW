@@ -1,6 +1,4 @@
-# UMW
-Unit-Modified Weibull Distribution and Quantile Regression Model
-
+# Unit-Modified Weibull Distribution and Quantile Regression Model
 
 **Abstract**
 <p align="justify">

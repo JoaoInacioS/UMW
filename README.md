@@ -8,3 +8,4 @@ The second objective of this work is to introduce a quantile regression model fo
 Maximum likelihood estimators (MLEs) are used to estimate the model parameters. Monte Carlo simulations are performed to evaluate the MLE properties of the model parameters in finite sample sizes. 
 The introduced methods are used for modeling some sustainability indicators related to the SDGs, also considering the reading skills of dyslexic children, which are indirectly associated with SDG 4 (Quality Education) and SDG 3 (Health and Well-Being).
 </p>
+Keywords: Maximum Likelihood, Monte Carlo Simulation, Quantile Regression, Unit Distribution.

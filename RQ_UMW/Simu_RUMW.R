@@ -10,7 +10,7 @@ source("func_simu_RUMW.R")
 nc <- c(50,150,300,500) # Required sizes
 # tauc <- c(0.1,0.5,0.9)
 tauc <- c(0.1,0.5,0.9) # Required Quantile
-re<-11000 #Monte Carlo Replicas Simulated
+re<-10100 #Monte Carlo Replicas Simulated
 RF<-10000 #Monte Carlo Replicas Required
 cen <- 1 # Scenario
 

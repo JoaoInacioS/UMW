@@ -8,7 +8,7 @@ source("func_simu_UMW.R")
 
 # nc <- c(40,80,120,160,200)
 nc <- c(40,80,120,160,200) # Required sizes
-re<-11000 #Monte Carlo Replicas Simulated
+re<-10100 #Monte Carlo Replicas Simulated
 RF<-10000 #Monte Carlo Replicas Required
 cen <- 1 # Scenario
 

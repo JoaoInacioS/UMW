@@ -14,11 +14,11 @@ EST_RUMW<-function(y,X,tau=0.5,applic=F,intercept=T,
   #
   lb <- c(rep(0.001,2),rep(-Inf,length(startbeta)))
   ub <- c(rep(Inf,length(startbeta)+2))
-  start.theta<-c(0.5,4,startbeta)
+  start.theta<-c(1,1,startbeta)
   mod<-try(optim(par=start.theta,fn=llike_RUMW,gr=vscore_RUMW,lower=lb,upper=ub,y=y,X=X,
-                 method="L-BFGS-B",tau=tau,hessian=F,m.optim=1.0,ginv_lig=ginv_lig,
+                 method="L-BFGS-B",tau=tau,hessian=F,m.optim=1.0,ginv_lig=ginv_lig,g_lig=g_lig,
                  control=list(fnscale=-1,maxit=2000)),T)
-  mod$hessian<-hessian_RUMW(theta0=mod$par,y=y,X=X,tau=tau,ginv_lig=ginv_lig)
+  mod$hessian<-hessian_RUMW(theta0=mod$par,y=y,X=X,tau=tau,ginv_lig=ginv_lig,g_lig=g_lig)
   tmp2<-test.fun(mod)
   if(class(tmp2)=="numeric"){
     if(applic==F){tmp2}else{return(mod)}
@@ -27,7 +27,7 @@ EST_RUMW<-function(y,X,tau=0.5,applic=F,intercept=T,
 
 ## Log-vero RQ-UMW -------------------------------------------------------------
 
-llike_RUMW<-function(theta0,y,X,tau,m.optim,ginv_lig)
+llike_RUMW<-function(theta0,y,X,tau,m.optim,ginv_lig,g_lig)
 {
   beta<-theta0[3:length(theta0)]
   mut<-ginv_lig(as.vector(X%*%beta))
@@ -42,8 +42,9 @@ llike_RUMW<-function(theta0,y,X,tau,m.optim,ginv_lig)
 
 ## Scoring function RQ-UMW -----------------------------------------------------
 
-vscore_RUMW<-function(theta0,y,X,tau,ginv_lig,m.optim = 1)
+vscore_RUMW<-function(theta0,y,X,tau,g_lig,ginv_lig,m.optim = 1,vsmatrix=F)
 {
+  D1_num <- Deriv::Deriv(g_lig)
   beta<-theta0[3:length(theta0)]
   mut<-ginv_lig(as.vector(X%*%beta))
   gamma<-theta0[1]
@@ -56,22 +57,30 @@ vscore_RUMW<-function(theta0,y,X,tau,ginv_lig,m.optim = 1)
   (mut^lambda*log(tau)*(log(mut)-log(y))*(-log(y))^gamma)/((-log(mut))^gamma*y^lambda)
   # mu
   wt <- ((y^lambda*(-log(mut))^gamma+log(tau)*(-log(y))^gamma*mut^lambda)*(lambda*log(mut)-gamma))/(y^lambda*mut*(-log(mut))^gamma*log(mut))
-  Ugamma<-sum(rt); Ulambda<-sum(st); Ubeta <- as.vector(t(X) %*% (diag((mut*(1 - mut)))) %*% wt)
-  vetor_score<-c(Ugamma,Ulambda,Ubeta)
-  return(vetor_score)
+  if(vsmatrix == F){
+    Ugamma<-sum(rt); Ulambda<-sum(st); Ubeta <- as.vector(t(X) %*% (diag(1/D1_num(mut))) %*% wt)
+    vetor_score<-c(Ugamma,Ulambda,Ubeta)
+    return(vetor_score)
+  }else{
+    Ubeta_m <- X * (mut*(1-mut) * wt)
+    m_score<-as.matrix(cbind(rt,st,Ubeta_m))
+    return(m_score)
+  }
 }
 
 ## Hessian RQ-UMW --------------------------------------------------------------
 
-hessian_RUMW<-function(theta0,y,X,ginv_lig,tau,m.optim = 1)
+hessian_RUMW<-function(theta0,y,X,g_lig,ginv_lig,tau,m.optim = 1)
 {
+  D1_num <- Deriv::Deriv(g_lig)
+  D2_num <- Deriv::Deriv(D1_num)
   n<-length(y)
   beta<-theta0[3:length(theta0)]
   mut<-ginv_lig(as.vector(X%*%beta))
   gamma<-theta0[1]
   lambda<-theta0[2]
-  T1<-(diag((mut*(1 - mut))))
-  T2<-(diag(1-(2*mut)))
+  T1<-(diag(1/D1_num(mut)))
+  T2<-(diag(-(D2_num(mut)*(1/(D1_num(mut))^2))))
   A_1 <- mut^lambda*log(tau)*(-log(y))^gamma
   A_2 <- log(-log(y))-log(-log(mut))
   #
@@ -131,4 +140,3 @@ test.fun<-function(object)
     }else{return(FALSE)}
   }else{return(FALSE)}
 }
-

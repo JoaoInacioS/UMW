@@ -11,6 +11,4 @@ The introduced methods are used for modeling some sustainability indicators rela
 Keywords: Maximum Likelihood, Monte Carlo Simulation, Quantile Regression, Unit Distribution.
 
 
-DOI:
-
-Arvix: https://arxiv.org/html/2508.17359v1
+DOI: https://doi.org/10.48550/arXiv.2508.17359
